@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storage Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #fff; }
+        button { margin: 5px; padding: 10px; cursor: pointer; }
+        pre { background: #0a0a0a; padding: 10px; border-radius: 5px; overflow: auto; }
+        .success { color: #4ade80; }
+        .error { color: #ef4444; }
+    </style>
+</head>
+<body>
+    <h1>Storage System Test</h1>
+
+    <div>
+        <h2>User Settings Tests</h2>
+        <button onclick="testSaveSettings()">Save Settings</button>
+        <button onclick="testLoadSettings()">Load Settings</button>
+    </div>
+
+    <div>
+        <h2>Meal Logs Tests</h2>
+        <button onclick="testAddMeal()">Add Meal</button>
+        <button onclick="testLoadTodayMeals()">Load Today's Meals</button>
+        <button onclick="testUpdateMeal()">Update Last Meal</button>
+        <button onclick="testDeleteMeal()">Delete Last Meal</button>
+    </div>
+
+    <div>
+        <h2>Export/Import Tests</h2>
+        <button onclick="testExport()">Export Data</button>
+        <input type="file" id="importFile" onchange="testImport()" style="display: none;">
+        <button onclick="document.getElementById('importFile').click()">Import Data</button>
+        <button onclick="testClearAll()">Clear All Data</button>
+    </div>
+
+    <h2>Output:</h2>
+    <pre id="output"></pre>
+
+    <script src="storage.js"></script>
+    <script>
+        const output = document.getElementById('output');
+        let lastMealId = null;
+
+        function log(message, isError = false) {
+            const span = document.createElement('span');
+            span.className = isError ? 'error' : 'success';
+            span.textContent = message + '\n';
+            output.appendChild(span);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function testSaveSettings() {
+            output.innerHTML = '';
+            log('Testing Save Settings...');
+
+            const settings = {
+                currentWeight: 180,
+                goalWeight: 160,
+                timeline: '3 months',
+                dailyCalorieTarget: 1800
+            };
+
+            const saved = Storage.settings.save(settings);
+            if (saved) {
+                log('Settings saved successfully!');
+                log(JSON.stringify(saved, null, 2));
+            } else {
+                log('Failed to save settings', true);
+            }
+        }
+
+        function testLoadSettings() {
+            output.innerHTML = '';
+            log('Testing Load Settings...');
+
+            const settings = Storage.settings.load();
+            log('Loaded settings:');
+            log(JSON.stringify(settings, null, 2));
+
+            const isComplete = Storage.settings.isSetupComplete();
+            log(`Setup complete: ${isComplete}`);
+        }
+
+        function testAddMeal() {
+            output.innerHTML = '';
+            log('Testing Add Meal...');
+
+            const meal = {
+                description: 'Test meal - Grilled chicken salad',
+                calories: 450,
+                confidence: 'high'
+            };
+
+            const added = Storage.meals.addMeal(meal);
+            if (added) {
+                lastMealId = added.id;
+                log('Meal added successfully!');
+                log(JSON.stringify(added, null, 2));
+            } else {
+                log('Failed to add meal', true);
+            }
+        }
+
+        function testLoadTodayMeals() {
+            output.innerHTML = '';
+            log('Testing Load Today\'s Meals...');
+
+            const todayLog = Storage.meals.loadByDate();
+            log('Today\'s log:');
+            log(JSON.stringify(todayLog, null, 2));
+
+            const weeklyAvg = Storage.meals.getWeeklyAverage();
+            log(`Weekly average: ${weeklyAvg} calories`);
+        }
+
+        function testUpdateMeal() {
+            output.innerHTML = '';
+            log('Testing Update Meal...');
+
+            if (!lastMealId) {
+                log('No meal to update. Add a meal first.', true);
+                return;
+            }
+
+            const updates = {
+                calories: 500,
+                description: 'Updated meal description'
+            };
+
+            const updated = Storage.meals.updateMeal(lastMealId, updates);
+            if (updated) {
+                log('Meal updated successfully!');
+                log(JSON.stringify(updated, null, 2));
+            } else {
+                log('Failed to update meal', true);
+            }
+        }
+
+        function testDeleteMeal() {
+            output.innerHTML = '';
+            log('Testing Delete Meal...');
+
+            if (!lastMealId) {
+                log('No meal to delete. Add a meal first.', true);
+                return;
+            }
+
+            const deleted = Storage.meals.deleteMeal(lastMealId);
+            if (deleted) {
+                log('Meal deleted successfully!');
+                lastMealId = null;
+            } else {
+                log('Failed to delete meal', true);
+            }
+        }
+
+        function testExport() {
+            output.innerHTML = '';
+            log('Testing Export...');
+
+            try {
+                Storage.export.exportToJSON();
+                log('Data exported successfully! Check your downloads.');
+            } catch (error) {
+                log('Export failed: ' + error.message, true);
+            }
+        }
+
+        async function testImport() {
+            output.innerHTML = '';
+            log('Testing Import...');
+
+            const file = document.getElementById('importFile').files[0];
+            if (!file) {
+                log('No file selected', true);
+                return;
+            }
+
+            try {
+                const result = await Storage.export.importFromJSON(file);
+                log(result.message);
+            } catch (error) {
+                log('Import failed: ' + error.message, true);
+            }
+        }
+
+        function testClearAll() {
+            output.innerHTML = '';
+            log('Testing Clear All...');
+
+            const cleared = Storage.clearAll();
+            if (cleared) {
+                log('All data cleared successfully!');
+            } else {
+                log('Clear operation cancelled');
+            }
+        }
+
+        // Test storage info on load
+        window.onload = async () => {
+            const info = await Storage.getStorageInfo();
+            if (info) {
+                log(`Storage: ${info.percentUsed}% used`);
+            }
+        };
+    </script>
+</body>
+</html>

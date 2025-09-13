@@ -30,11 +30,11 @@
 
 ### Task 4: Local Storage System
 **File: `storage.js`**
-- [ ] Create functions to save/load user settings (weight, goal, daily calorie target)
-- [ ] Create functions to save/load daily meal logs
-- [ ] Implement data structure: `{ date: 'YYYY-MM-DD', meals: [], totalCalories: 0 }`
-- [ ] Add export/import JSON functionality
-- [ ] Test data persistence across browser sessions
+- [x] Create functions to save/load user settings (weight, goal, daily calorie target)
+- [x] Create functions to save/load daily meal logs
+- [x] Implement data structure: `{ date: 'YYYY-MM-DD', meals: [], totalCalories: 0 }`
+- [x] Add export/import JSON functionality
+- [x] Test data persistence across browser sessions
 
 ### Task 5: Gemini API Integration
 **File: `gemini.js`**
@@ -66,11 +66,11 @@
 ## Phase 3: Settings & Onboarding (30-45 min)
 
 ### Task 8: User Settings
-- [ ] Create simple onboarding modal (first-time users)
-- [ ] Collect: current weight, goal weight, timeline
-- [ ] Calculate daily calorie target using basic formula
-- [ ] Create settings panel to update goals
-- [ ] Validate user inputs
+- [x] Create simple onboarding modal (first-time users)
+- [x] Collect: current weight, goal weight, timeline
+- [x] Calculate daily calorie target using basic formula
+- [x] Create settings panel to update goals
+- [x] Validate user inputs
 
 ### Task 9: Daily Calorie Goal Logic
 **File: `utils.js`**
