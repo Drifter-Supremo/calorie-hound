@@ -284,7 +284,7 @@ class MealManager {
             <div class="meal-header">
                 <div class="meal-description">${meal.description}</div>
                 <div class="meal-actions">
-                    <div class="meal-calories">${meal.calories}</div>
+                    <div class="meal-calories" role="button" aria-label="Edit calories" title="Tap to edit calories">${meal.calories}</div>
                     <button class="edit-meal-btn" data-meal-id="${meal.id}" aria-label="Edit meal description">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -310,6 +310,7 @@ class MealManager {
         // Add event listeners
         const editBtn = mealCard.querySelector('.edit-meal-btn');
         const deleteBtn = mealCard.querySelector('.delete-meal-btn');
+        const caloriesBtn = mealCard.querySelector('.meal-calories');
 
         editBtn?.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -319,6 +320,11 @@ class MealManager {
         deleteBtn?.addEventListener('click', (e) => {
             e.stopPropagation();
             this.deleteMeal(meal.id);
+        });
+
+        caloriesBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.editMealCalories(meal.id, meal.calories);
         });
 
         elements.mealsContainer?.appendChild(mealCard);
@@ -377,6 +383,30 @@ class MealManager {
         } catch (error) {
             console.error('Error updating meal:', error);
             alert('Failed to update meal. Please try again.');
+        }
+    }
+
+    async editMealCalories(mealId, currentCalories) {
+        const input = prompt('Edit calories (1 - 5000):', String(currentCalories));
+        if (input === null) return;
+        const newValue = parseInt(input, 10);
+        if (Number.isNaN(newValue)) return alert('Please enter a valid number.');
+        if (newValue < 1 || newValue > 5000) return alert('Calories must be between 1 and 5000.');
+        if (newValue === currentCalories) return;
+
+        try {
+            const updated = Storage.meals.updateMeal(mealId, { calories: newValue });
+            if (updated) {
+                this.loadTodaysMeals();
+                window.settingsManager?.updateDailyTotal();
+                window.historicalManager?.refresh();
+                window.settingsManager?.showSuccessMessage('Calories updated');
+            } else {
+                throw new Error('Update failed');
+            }
+        } catch (err) {
+            console.error('Error updating calories:', err);
+            alert('Failed to update calories. Please try again.');
         }
     }
 

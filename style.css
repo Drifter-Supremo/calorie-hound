@@ -293,6 +293,7 @@ main {
     color: var(--accent-primary);
     min-width: 80px;
     text-align: right;
+    cursor: pointer; /* tap to edit */
 }
 
 .edit-meal-btn,
