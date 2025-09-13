@@ -19,12 +19,12 @@
 - [x] Add settings button in header
 
 ### Task 3: Basic CSS Styling
-- [ ] Mobile-first responsive design
-- [ ] Simple card styling for meals
-- [ ] Large, accessible button styling
-- [ ] Clean, minimal color scheme (maybe green theme for health)
-- [ ] Basic modal/overlay styling
-- [ ] Ensure text is readable on all screen sizes
+- [x] Mobile-first responsive design
+- [x] Simple card styling for meals
+- [x] Large, accessible button styling
+- [x] Clean, minimal color scheme (blue theme for professional look)
+- [x] Basic modal/overlay styling
+- [x] Ensure text is readable on all screen sizes
 
 ## Phase 2: Core Functionality (60-90 min)
 

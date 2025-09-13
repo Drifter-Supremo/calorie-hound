@@ -1,2 +1,503 @@
-/* Calorie Hound Styles */
-/* Mobile-first responsive design */
+/* CSS Variables for Dark Theme */
+:root {
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #1a1a1a;
+    --bg-card: #141414;
+    --bg-modal: rgba(0, 0, 0, 0.95);
+    --bg-hover: #252525;
+
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0a0;
+    --text-dim: #707070;
+
+    --accent-primary: #60a5fa;
+    --accent-hover: #3b82f6;
+    --accent-glow: rgba(96, 165, 250, 0.2);
+
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --success: var(--accent-primary);
+
+    --border-color: #2a2a2a;
+    --shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.3);
+
+    --radius: 16px;
+    --radius-sm: 8px;
+    --radius-lg: 24px;
+
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* App Container */
+#app {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: var(--bg-primary);
+    position: relative;
+}
+
+/* Header */
+header {
+    background: var(--bg-secondary);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    background: rgba(26, 26, 26, 0.95);
+}
+
+header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.calorie-display {
+    text-align: center;
+    flex: 1;
+    margin: 0 20px;
+}
+
+.daily-total {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-shadow: 0 0 20px var(--accent-glow);
+}
+
+.calorie-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: -4px;
+}
+
+.settings-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--text-secondary);
+}
+
+.settings-btn:hover {
+    background: var(--bg-hover);
+    transform: rotate(90deg);
+    color: var(--text-primary);
+}
+
+.settings-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Main Content */
+main {
+    padding: 20px;
+    padding-bottom: 100px;
+}
+
+/* Add Meal Button */
+.add-meal-btn {
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover));
+    color: var(--bg-primary);
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: var(--transition);
+    box-shadow: 0 4px 20px var(--accent-glow);
+    margin-bottom: 24px;
+    min-height: 64px;
+}
+
+.add-meal-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px var(--accent-glow);
+}
+
+.add-meal-btn:active {
+    transform: translateY(0);
+}
+
+.camera-icon {
+    width: 24px;
+    height: 24px;
+}
+
+/* Meals Container */
+.meals-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Meal Card */
+.meal-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 16px;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.meal-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--accent-primary);
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.meal-card:hover {
+    background: var(--bg-hover);
+    transform: translateX(4px);
+}
+
+.meal-card:hover::before {
+    opacity: 1;
+}
+
+.meal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.meal-description {
+    font-size: 16px;
+    color: var(--text-primary);
+    font-weight: 500;
+    flex: 1;
+}
+
+.meal-calories {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent-primary);
+    min-width: 80px;
+    text-align: right;
+}
+
+.meal-calories::after {
+    content: ' cal';
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+.meal-time {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 4px;
+}
+
+.meal-confidence {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    margin-left: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.meal-confidence.high {
+    background: rgba(96, 165, 250, 0.1);
+    color: var(--accent-primary);
+}
+
+.meal-confidence.medium {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+}
+
+.meal-confidence.low {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+}
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-modal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    padding: 20px;
+}
+
+.modal-content {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 400px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+}
+
+.close-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.close-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+#photoPreview {
+    width: 100%;
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+}
+
+.take-photo-btn,
+.analyze-btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-bottom: 12px;
+}
+
+.take-photo-btn {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 2px dashed var(--border-color);
+}
+
+.take-photo-btn:hover {
+    background: var(--bg-hover);
+    border-color: var(--accent-primary);
+}
+
+.analyze-btn {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover));
+    color: var(--bg-primary);
+    box-shadow: 0 4px 20px var(--accent-glow);
+}
+
+.analyze-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px var(--accent-glow);
+}
+
+/* Loading State */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid var(--border-color);
+    border-radius: 50%;
+    border-top-color: var(--accent-primary);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+}
+
+.empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.empty-state-text {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.empty-state-subtext {
+    font-size: 14px;
+    color: var(--text-dim);
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    header {
+        padding: 16px;
+    }
+
+    header h1 {
+        font-size: 20px;
+    }
+
+    .daily-total {
+        font-size: 28px;
+    }
+
+    main {
+        padding: 16px;
+    }
+
+    .add-meal-btn {
+        padding: 18px;
+        font-size: 16px;
+    }
+}
+
+/* Tablet and larger screens */
+@media (min-width: 768px) {
+    #app {
+        max-width: 600px;
+        margin: 20px auto;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border-color);
+    }
+
+    header {
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+}
+
+/* Accessibility - Focus States */
+button:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+}
+
+/* Touch-friendly tap targets */
+button,
+.meal-card {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar for Webkit browsers */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--bg-hover);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--border-color);
+}
