@@ -773,6 +773,21 @@ class PhotoManager {
                 message: 'Unable to connect to the AI service.',
                 suggestion: 'Check your internet connection and try again.'
             },
+            'failed to fetch': {
+                title: 'Network/Blocking Error',
+                message: 'The request didn\'t reach the AI service.',
+                suggestion: 'If you\'re on Brave/AdBlock, disable shields/content blocking for this site and retry.'
+            },
+            'blocked_by_client': {
+                title: 'Request Blocked by Browser',
+                message: 'A browser feature/extension blocked the AI request.',
+                suggestion: 'Disable Brave Shields/Ad blockers for this site, then try again.'
+            },
+            'cors': {
+                title: 'CORS/Blocking Error',
+                message: 'The browser blocked the request due to CORS or privacy settings.',
+                suggestion: 'Try Chrome or disable strict privacy shields for this site.'
+            },
             'timeout': {
                 title: 'Request Timed Out',
                 message: 'The analysis took too long to complete.',
@@ -791,7 +806,7 @@ class PhotoManager {
         };
 
         // Find matching error type
-        const lowerMessage = message.toLowerCase();
+        const lowerMessage = (message || '').toLowerCase();
         for (const [key, info] of Object.entries(errorMap)) {
             if (lowerMessage.includes(key.toLowerCase())) {
                 return info;
@@ -802,7 +817,7 @@ class PhotoManager {
         return {
             title: 'Analysis Failed',
             message: 'Something went wrong while analyzing your photo.',
-            suggestion: 'Please check your internet connection and try again. If the problem persists, try a different photo.'
+            suggestion: 'Please check your internet connection, or disable content blockers (e.g., Brave Shields) for this site and try again.'
         };
     }
 

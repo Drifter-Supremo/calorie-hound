@@ -27,6 +27,8 @@
     --radius-lg: 24px;
 
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Visual viewport height fallback (updated by JS) */
+    --vvh: 100dvh;
 }
 
 /* Reset and Base Styles */
@@ -36,21 +38,28 @@
     box-sizing: border-box;
 }
 
+html, body { height: auto; }
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
     background: var(--bg-primary);
     color: var(--text-primary);
-    min-height: 100vh;
+    /* Prefer dynamic viewport units; fallback to JS-updated --vvh */
+    min-height: 100dvh;
+    min-height: var(--vvh);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* App Container */
 #app {
     max-width: 480px;
     margin: 0 auto;
-    min-height: 100vh;
+    /* Ensure full-height layout respects dynamic viewport */
+    min-height: 100dvh;
+    min-height: var(--vvh);
     background: var(--bg-primary);
     position: relative;
 }
@@ -388,7 +397,11 @@ main {
     max-width: 400px;
     box-shadow: var(--shadow);
     border: 1px solid var(--border-color);
-    overflow: hidden;
+    /* Allow inner scrolling on small screens */
+    max-height: calc(var(--vvh) - 40px);
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
     animation: slideUp 0.3s ease-out;
 }
 

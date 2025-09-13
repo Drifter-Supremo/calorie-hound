@@ -46,6 +46,15 @@
 - [x] Corrected Gemini request payload (adds role: "user") and kept single model `gemini-2.5-flash-lite` per constraints
 - [x] Improved error surfacing without introducing model fallbacks
 
+### Mobile Viewport & Scrolling Improvements
+*Completed: September 13, 2025*
+- [x] Added `viewport-fit=cover` to meta viewport
+- [x] Implemented `viewport.js` that updates `--vvh` from `visualViewport.height`
+- [x] Replaced fragile `100vh` with `min-height:100dvh` + `min-height: var(--vvh)` fallbacks
+- [x] Added safe-area padding for iOS home indicator
+- [x] Made modal content scrollable with iOS momentum and contained overscroll
+- [x] Cache-busted CSS/JS includes to avoid stale assets on mobile
+
 ### Task 1: Project Setup
 *Completed: September 13, 2025*
 - [x] Created project folder structure (existed with docs, added app files)
