@@ -55,6 +55,14 @@
 - [x] Made modal content scrollable with iOS momentum and contained overscroll
 - [x] Cache-busted CSS/JS includes to avoid stale assets on mobile
 
+### Edit Meal Modal (Description + Calories)
+*Completed: September 13, 2025*
+- [x] Pressing the Edit button opens a modal to edit description and calories
+- [x] Also opens when tapping the calorie number on a meal card
+- [x] Validates calories (1–5000) and non-empty description
+- [x] Saves to storage, updates daily total and historical view immediately
+- [x] Reuses existing modal styles for consistent mobile UX
+
 ### Task 1: Project Setup
 *Completed: September 13, 2025*
 - [x] Created project folder structure (existed with docs, added app files)
