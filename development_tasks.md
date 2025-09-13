@@ -86,11 +86,13 @@
 ## Phase 4: Historical View & Polish (45-60 min)
 
 ### Task 10: Historical Meal View
-- [ ] Create past days view (last 7 days visible by default)
-- [ ] Group meals by date
-- [ ] Make older days collapsible
-- [ ] Add simple date navigation
-- [ ] Show weekly calorie average
+- [x] Create past days view (last 7 days visible by default)
+- [x] Group meals by date
+- [x] Make older days collapsible
+- [x] Add simple date navigation (smart date formatting)
+- [x] Show weekly calorie average
+- [x] Fixed sample data clearing issues
+- [x] Fixed JavaScript errors from removed methods
 
 ### Task 11: UI Polish & UX Improvements
 - [ ] Add loading spinners for API calls

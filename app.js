@@ -13,6 +13,9 @@ const elements = {
     importFile: document.getElementById('importFile'),
     dailyTotal: document.querySelector('.daily-total'),
     mealsContainer: document.getElementById('mealsContainer'),
+    historicalSection: document.getElementById('historicalSection'),
+    historicalContainer: document.getElementById('historicalContainer'),
+    weeklyAverage: document.getElementById('weeklyAverage'),
     // Photo capture elements
     addMealBtn: document.getElementById('addMealBtn'),
     cameraInput: document.getElementById('cameraInput'),
@@ -106,6 +109,8 @@ class SettingsManager {
             this.showSuccessMessage('Settings saved successfully!');
             this.closeSettings();
             this.updateDailyTotal();
+            // Refresh historical data with new goal
+            window.historicalManager?.refresh();
         }
     }
 
@@ -128,7 +133,8 @@ class SettingsManager {
                 this.showSuccessMessage(result.message);
                 this.loadSettings();
                 this.updateDailyTotal();
-                location.reload(); // Reload to show imported data
+                window.historicalManager?.refresh();
+                window.mealManager?.loadTodaysMeals();
             }
         } catch (error) {
             alert('Failed to import data: ' + error.message);
@@ -318,6 +324,7 @@ class MealManager {
                 // Update UI
                 this.loadTodaysMeals();
                 window.settingsManager?.updateDailyTotal();
+                window.historicalManager?.refresh();
                 window.settingsManager?.showSuccessMessage('Meal deleted');
             } else {
                 throw new Error('Failed to delete meal');
@@ -649,6 +656,7 @@ class PhotoManager {
                 // Update UI
                 window.settingsManager?.updateDailyTotal();
                 window.mealManager?.loadTodaysMeals();
+                window.historicalManager?.refresh();
 
                 // Show success message
                 window.settingsManager?.showSuccessMessage('Meal saved successfully!');
@@ -666,16 +674,171 @@ class PhotoManager {
     }
 }
 
+// Historical Meal Management
+class HistoricalManager {
+    constructor() {
+        this.loadHistoricalData();
+    }
+
+    loadHistoricalData() {
+        this.updateWeeklyAverage();
+        this.displayPastDays();
+    }
+
+    updateWeeklyAverage() {
+        const averageCalories = Storage.meals.getWeeklyAverage();
+        if (elements.weeklyAverage) {
+            elements.weeklyAverage.textContent = averageCalories;
+        }
+    }
+
+    displayPastDays() {
+        if (!elements.historicalContainer) return;
+
+        // Get last 7 days of data (excluding today)
+        const pastDays = this.getPastDaysData(7);
+
+        if (pastDays.length === 0) {
+            elements.historicalSection.style.display = 'none';
+            return;
+        }
+
+        elements.historicalSection.style.display = 'block';
+        elements.historicalContainer.innerHTML = '';
+
+        pastDays.forEach(dayData => {
+            const dayCard = this.createDayCard(dayData);
+            elements.historicalContainer.appendChild(dayCard);
+        });
+    }
+
+    getPastDaysData(daysCount) {
+        const pastDays = [];
+        const today = new Date();
+
+        for (let i = 1; i <= daysCount; i++) {
+            const date = new Date(today);
+            date.setDate(date.getDate() - i);
+            const dateString = date.toISOString().split('T')[0];
+
+            const dayLog = Storage.meals.loadByDate(dateString);
+            if (dayLog.meals && dayLog.meals.length > 0) {
+                pastDays.push({
+                    date: dateString,
+                    displayDate: this.formatDate(date),
+                    meals: dayLog.meals,
+                    totalCalories: dayLog.totalCalories,
+                    isExpanded: false
+                });
+            }
+        }
+
+        return pastDays;
+    }
+
+    createDayCard(dayData) {
+        const card = document.createElement('div');
+        card.className = 'day-card';
+        card.dataset.date = dayData.date;
+
+        // Get user settings for goal comparison
+        const userSettings = Storage.settings.load();
+        const targetCalories = userSettings.dailyTarget || 2000;
+
+        // Determine status for color coding
+        let statusClass = 'under-goal';
+        if (dayData.totalCalories >= targetCalories * 0.9 && dayData.totalCalories <= targetCalories * 1.1) {
+            statusClass = 'at-goal';
+        } else if (dayData.totalCalories > targetCalories * 1.1) {
+            statusClass = 'over-goal';
+        }
+
+        card.innerHTML = `
+            <div class="day-header">
+                <div class="day-info">
+                    <div class="day-date">${dayData.displayDate}</div>
+                    <div class="day-summary">${dayData.meals.length} meal${dayData.meals.length !== 1 ? 's' : ''}</div>
+                </div>
+                <div class="day-total">
+                    <div class="day-calories ${statusClass}">${dayData.totalCalories}</div>
+                    <svg class="expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6,9 12,15 18,9"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <div class="day-meals">
+                ${dayData.meals.map(meal => this.createHistoricalMeal(meal)).join('')}
+            </div>
+        `;
+
+        // Add click handler for expand/collapse
+        const header = card.querySelector('.day-header');
+        header.addEventListener('click', () => {
+            card.classList.toggle('expanded');
+        });
+
+        return card;
+    }
+
+    createHistoricalMeal(meal) {
+        const time = new Date(meal.timestamp).toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
+
+        return `
+            <div class="historical-meal">
+                <div class="historical-meal-info">
+                    <div class="historical-meal-description">${meal.description}</div>
+                    <div class="historical-meal-time">${time}</div>
+                </div>
+                <div class="historical-meal-calories">${meal.calories} cal</div>
+            </div>
+        `;
+    }
+
+    formatDate(date) {
+        const today = new Date();
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        // Check if it's yesterday
+        if (date.toDateString() === yesterday.toDateString()) {
+            return 'Yesterday';
+        }
+
+        // Check if it's within the last week
+        const daysAgo = Math.floor((today - date) / (1000 * 60 * 60 * 24));
+        if (daysAgo <= 7) {
+            return date.toLocaleDateString('en-US', { weekday: 'long' });
+        }
+
+        // Otherwise show the date
+        return date.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric'
+        });
+    }
+
+    // Refresh historical data (call when meals are added/removed)
+    refresh() {
+        this.loadHistoricalData();
+    }
+}
+
 // Initialize app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize managers
     window.settingsManager = new SettingsManager();
     window.mealManager = new MealManager();
     window.photoManager = new PhotoManager();
+    window.historicalManager = new HistoricalManager();
 
     // Remove sample meal cards if storage has data
     const todayLog = Storage.meals.loadByDate();
-    if (Storage.settings.isSetupComplete() || todayLog.meals.length > 0) {
+    const settings = Storage.settings.load();
+    if (settings.dailyTarget || todayLog.meals.length > 0) {
         // Clear any sample data
         const sampleCards = document.querySelectorAll('.meal-card:not([data-meal-id])');
         sampleCards.forEach(card => card.remove());
@@ -685,7 +848,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.settingsManager.updateDailyTotal();
 
     // Test API connection on startup (optional)
-    if (window.GeminiAPI && Storage.settings.isSetupComplete()) {
+    if (window.GeminiAPI) {
         window.GeminiAPI.testConnection().then(connected => {
             if (connected) {
                 console.log('✅ Gemini API connection verified');

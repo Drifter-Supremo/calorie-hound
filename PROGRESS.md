@@ -223,20 +223,45 @@
 
 ---
 
-## 🚀 Next Up: Phase 4 - Historical View & Polish
+### Task 10: Historical Meal View & Bug Fixes
+*Completed: September 13, 2025*
+- [x] Created past days view showing last 7 days with meal data
+- [x] Grouped meals by date with collapsible day cards
+- [x] Implemented click-to-expand/collapse with smooth animations
+- [x] Added smart date formatting ("Yesterday", weekdays, "Jan 15" format)
+- [x] Integrated 7-day calorie average display in section header
+- [x] Color-coded historical daily totals (green/blue/red vs user goal)
+- [x] Fixed hardcoded 830 calories bug in HTML
+- [x] Removed broken `isSetupComplete()` method calls
+- [x] Fixed sample data clearing logic
+- [x] Auto-refreshes when meals added/deleted/settings changed
 
-### Task 10: Historical Meal View
-- [ ] Create past days view (last 7 days visible by default)
-- [ ] Group meals by date
-- [ ] Make older days collapsible
-- [ ] Add simple date navigation
-- [ ] Show weekly calorie average
+#### Historical View Features:
+- **Past 7 days**: Only shows days with actual meal data
+- **Collapsible cards**: Click day header to expand meal details
+- **Smart dates**: "Yesterday", "Monday", or "Jan 15" format
+- **Weekly average**: Real-time 7-day calorie average
+- **Color coding**: Daily totals match user's goal status
+- **Responsive**: Works on mobile and desktop
+- **Auto-hide**: Section hidden when no historical data exists
 
 ---
 
-## Overall Progress: ~80% Complete
+## 🚀 Next Up: Phase 4 - UI Polish & UX Improvements
 
-### Time Invested So Far: ~170 minutes
+### Task 11: UI Polish & UX Improvements
+- [ ] Add loading spinners for API calls
+- [ ] Improve error messaging
+- [ ] Add confirmation dialogs for delete actions
+- [ ] Ensure smooth animations/transitions
+- [ ] Test on various screen sizes
+- [ ] Add helpful empty states ("No meals today - add your first!")
+
+---
+
+## Overall Progress: ~85% Complete
+
+### Time Invested So Far: ~210 minutes
 - Planning & documentation: 20 min
 - Repository setup: 10 min
 - CSS Styling & UI: 15 min
@@ -246,6 +271,7 @@
 - Photo workflow & meal management: 15 min
 - Mobile UX enhancements: 20 min
 - Calorie progress & settings simplification: 30 min
+- Historical view & bug fixes: 40 min
 
 ### Estimated Remaining Time: 1.5-2.5 hours
 

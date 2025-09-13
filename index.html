@@ -15,13 +15,13 @@
         <header>
             <h1>Calorie Hound</h1>
             <div class="calorie-display">
-                <div class="daily-total">830</div>
+                <div class="daily-total">0</div>
                 <div class="calorie-label">Calories Today</div>
                 <div class="progress-info">
                     <div class="progress-bar">
                         <div class="progress-fill" style="width: 0%;"></div>
                     </div>
-                    <div class="progress-text">Calculate goal in Settings</div>
+                    <div class="progress-text">Set goal in Settings</div>
                 </div>
             </div>
             <button id="settingsBtn" class="settings-btn" aria-label="Settings">
@@ -44,28 +44,23 @@
                 Add Meal
             </button>
 
-            <!-- Meals Container -->
+            <!-- Today's Meals Container -->
             <div id="mealsContainer" class="meals-container">
-                <!-- Sample meal card for preview -->
-                <div class="meal-card">
-                    <div class="meal-header">
-                        <div class="meal-description">Grilled chicken salad with mixed greens</div>
-                        <div class="meal-calories">450</div>
-                    </div>
-                    <div class="meal-time">
-                        12:30 PM
-                        <span class="meal-confidence high">high</span>
+                <!-- Today's meals will be dynamically added here -->
+            </div>
+
+            <!-- Historical Meals Section -->
+            <div id="historicalSection" class="historical-section">
+                <div class="section-header">
+                    <h3>Past Days</h3>
+                    <div class="week-average">
+                        <span class="average-label">7-day avg:</span>
+                        <span id="weeklyAverage" class="average-value">0</span>
+                        <span class="average-unit">cal</span>
                     </div>
                 </div>
-                <div class="meal-card">
-                    <div class="meal-header">
-                        <div class="meal-description">Turkey sandwich on whole wheat</div>
-                        <div class="meal-calories">380</div>
-                    </div>
-                    <div class="meal-time">
-                        8:15 AM
-                        <span class="meal-confidence medium">medium</span>
-                    </div>
+                <div id="historicalContainer" class="historical-container">
+                    <!-- Past days will be dynamically added here -->
                 </div>
             </div>
 
