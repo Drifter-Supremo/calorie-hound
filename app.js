@@ -1,4 +1,4 @@
-// Calorie Hound - Main Application Logic
+// Calorie Hound - Main Application Logic - v1.3 (cache bust)
 // Handles UI management and user interactions
 
 // DOM Elements
