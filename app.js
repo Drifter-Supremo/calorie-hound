@@ -6,15 +6,11 @@ const elements = {
     settingsBtn: document.getElementById('settingsBtn'),
     settingsModal: document.getElementById('settingsModal'),
     closeSettings: document.getElementById('closeSettings'),
-    currentWeight: document.getElementById('currentWeight'),
-    goalWeight: document.getElementById('goalWeight'),
-    timeline: document.getElementById('timeline'),
     dailyTarget: document.getElementById('dailyTarget'),
     saveSettings: document.getElementById('saveSettings'),
     exportData: document.getElementById('exportData'),
     importData: document.getElementById('importData'),
     importFile: document.getElementById('importFile'),
-    clearData: document.getElementById('clearData'),
     dailyTotal: document.querySelector('.daily-total'),
     mealsContainer: document.getElementById('mealsContainer'),
     // Photo capture elements
@@ -47,13 +43,12 @@ class SettingsManager {
         // Save settings
         elements.saveSettings?.addEventListener('click', () => this.saveSettings());
 
-        // Export/Import/Clear
+        // Export/Import
         elements.exportData?.addEventListener('click', () => this.exportData());
         elements.importData?.addEventListener('click', () => {
             elements.importFile?.click();
         });
         elements.importFile?.addEventListener('change', (e) => this.importData(e));
-        elements.clearData?.addEventListener('click', () => this.clearAllData());
 
         // Close modal on background click
         elements.settingsModal?.addEventListener('click', (e) => {
@@ -64,23 +59,15 @@ class SettingsManager {
     }
 
     checkFirstVisit() {
-        // Check if user has completed setup
-        if (!Storage.settings.isSetupComplete()) {
-            // Show settings modal on first visit
+        // Load existing settings
+        this.loadSettings();
+
+        // Show settings on first visit if no daily target is set
+        const settings = Storage.settings.load();
+        if (!settings.dailyTarget) {
             setTimeout(() => {
                 this.openSettings();
-                this.showWelcomeMessage();
             }, 500);
-        } else {
-            // Load existing settings
-            this.loadSettings();
-        }
-    }
-
-    showWelcomeMessage() {
-        const header = elements.settingsModal?.querySelector('.modal-header h3');
-        if (header) {
-            header.textContent = 'Welcome! Let\'s set up your goals';
         }
     }
 
@@ -99,38 +86,26 @@ class SettingsManager {
 
     loadSettings() {
         const settings = Storage.settings.load();
-
-        if (elements.currentWeight) elements.currentWeight.value = settings.currentWeight || '';
-        if (elements.goalWeight) elements.goalWeight.value = settings.goalWeight || '';
-        if (elements.timeline) elements.timeline.value = settings.timeline || '3 months';
-        if (elements.dailyTarget) elements.dailyTarget.value = settings.dailyCalorieTarget || 2000;
+        if (elements.dailyTarget) {
+            elements.dailyTarget.value = settings.dailyTarget || 2000;
+        }
     }
 
     saveSettings() {
-        const settings = {
-            currentWeight: parseFloat(elements.currentWeight?.value) || null,
-            goalWeight: parseFloat(elements.goalWeight?.value) || null,
-            timeline: elements.timeline?.value || null,
-            dailyCalorieTarget: parseInt(elements.dailyTarget?.value) || 2000
-        };
+        const dailyTarget = parseInt(elements.dailyTarget?.value) || 2000;
 
-        // Validate inputs
-        if (!settings.currentWeight || !settings.goalWeight) {
-            alert('Please enter both current and goal weight');
-            return;
-        }
-
-        if (settings.currentWeight <= settings.goalWeight) {
-            alert('Goal weight should be less than current weight for weight loss');
+        // Simple validation
+        if (dailyTarget < 1000 || dailyTarget > 5000) {
+            alert('Please enter a daily target between 1000-5000 calories');
             return;
         }
 
         // Save settings
-        const saved = Storage.settings.save(settings);
+        const saved = Storage.settings.save({ dailyTarget });
         if (saved) {
             this.showSuccessMessage('Settings saved successfully!');
             this.closeSettings();
-            this.updateUI();
+            this.updateDailyTotal();
         }
     }
 
@@ -152,7 +127,7 @@ class SettingsManager {
             if (result.success) {
                 this.showSuccessMessage(result.message);
                 this.loadSettings();
-                this.updateUI();
+                this.updateDailyTotal();
                 location.reload(); // Reload to show imported data
             }
         } catch (error) {
@@ -161,13 +136,6 @@ class SettingsManager {
 
         // Clear file input
         event.target.value = '';
-    }
-
-    clearAllData() {
-        if (Storage.clearAll()) {
-            this.showSuccessMessage('All data cleared');
-            location.reload();
-        }
     }
 
     showSuccessMessage(message) {
@@ -193,16 +161,63 @@ class SettingsManager {
         }, 3000);
     }
 
-    updateUI() {
-        // Update daily calorie display
-        this.updateDailyTotal();
-    }
 
     updateDailyTotal() {
         const todayLog = Storage.meals.loadByDate();
-        if (elements.dailyTotal) {
-            elements.dailyTotal.textContent = todayLog.totalCalories || 0;
+        const consumedCalories = todayLog.totalCalories || 0;
+
+        if (!elements.dailyTotal) return;
+
+        // Update the calorie number
+        elements.dailyTotal.textContent = consumedCalories;
+
+        // Get user settings for daily target
+        const userSettings = Storage.settings.load();
+        const targetCalories = userSettings.dailyTarget || 2000;
+
+        // Simple progress calculation
+        const remaining = targetCalories - consumedCalories;
+        const percentComplete = Math.round((consumedCalories / targetCalories) * 100);
+
+        // Determine status
+        let status = 'under';
+        let statusText = '';
+
+        if (consumedCalories < targetCalories) {
+            status = 'under';
+            statusText = `${remaining} calories remaining`;
+        } else if (consumedCalories === targetCalories) {
+            status = 'at';
+            statusText = 'Perfect! At your daily goal';
+        } else {
+            status = 'over';
+            statusText = `${Math.abs(remaining)} calories over goal`;
         }
+
+        // Update progress bar
+        const progressFill = document.querySelector('.progress-fill');
+        const progressText = document.querySelector('.progress-text');
+
+        if (progressFill && progressText) {
+            // Update progress bar width (max 100% to avoid overflow)
+            const progressWidth = Math.min(percentComplete, 100);
+            progressFill.style.width = `${progressWidth}%`;
+
+            // Update progress bar color
+            progressFill.className = 'progress-fill';
+            if (status === 'over') {
+                progressFill.classList.add('over-goal');
+            } else if (status === 'at') {
+                progressFill.classList.add('at-goal');
+            }
+
+            // Update progress text
+            progressText.textContent = statusText;
+        }
+
+        // Update daily total color coding
+        elements.dailyTotal.className = 'daily-total';
+        elements.dailyTotal.classList.add(`${status}-goal`);
     }
 }
 

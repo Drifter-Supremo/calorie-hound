@@ -100,6 +100,58 @@ header h1 {
     margin-top: -4px;
 }
 
+/* Progress Indicators */
+.progress-info {
+    margin-top: 8px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--bg-card);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-primary), #3b82f6);
+    border-radius: 3px;
+    transition: all 0.5s ease;
+    width: 0%;
+}
+
+.progress-fill.over-goal {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.progress-fill.at-goal {
+    background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.progress-text {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* Daily total color coding */
+.daily-total.under-goal {
+    color: #10b981;
+    text-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.daily-total.at-goal {
+    color: #3b82f6;
+    text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.daily-total.over-goal {
+    color: #ef4444;
+    text-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
 .settings-btn {
     background: var(--bg-card);
     border: 1px solid var(--border-color);

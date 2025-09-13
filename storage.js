@@ -12,10 +12,7 @@ const UserSettings = {
     // Default settings
     getDefaults() {
         return {
-            currentWeight: null,
-            goalWeight: null,
-            timeline: null,
-            dailyCalorieTarget: 2000,
+            dailyTarget: 2000,
             createdAt: Date.now(),
             updatedAt: Date.now()
         };
@@ -51,13 +48,6 @@ const UserSettings = {
         }
     },
 
-    // Check if user has completed initial setup
-    isSetupComplete() {
-        const settings = this.load();
-        return settings.currentWeight !== null &&
-               settings.goalWeight !== null &&
-               settings.timeline !== null;
-    }
 };
 
 // Meal Logs Management
@@ -272,31 +262,6 @@ const Storage = {
     getLastSync() {
         const stored = localStorage.getItem(STORAGE_KEYS.LAST_SYNC);
         return stored ? parseInt(stored) : null;
-    },
-
-    // Clear all data
-    clearAll() {
-        if (confirm('This will delete all your data. Are you sure?')) {
-            localStorage.removeItem(STORAGE_KEYS.USER_SETTINGS);
-            localStorage.removeItem(STORAGE_KEYS.MEAL_LOGS);
-            localStorage.removeItem(STORAGE_KEYS.LAST_SYNC);
-            return true;
-        }
-        return false;
-    },
-
-    // Get storage size estimate
-    async getStorageInfo() {
-        if ('storage' in navigator && 'estimate' in navigator.storage) {
-            const estimate = await navigator.storage.estimate();
-            const percentUsed = (estimate.usage / estimate.quota) * 100;
-            return {
-                used: estimate.usage,
-                quota: estimate.quota,
-                percentUsed: percentUsed.toFixed(2)
-            };
-        }
-        return null;
     },
 
     // Public API

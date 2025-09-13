@@ -202,18 +202,41 @@
 
 ---
 
-## 🚀 Next Up: Phase 3 - Advanced Features & Polish
+### Task 9: Daily Calorie Goal Logic & Settings Simplification
+*Completed: September 13, 2025*
+- [x] Simplified calorie progress calculation (removed complex BMR)
+- [x] Uses daily target directly from settings (no weight/goal calculations)
+- [x] Added visual progress bar with percentage completion
+- [x] Implemented color-coded daily total (green/blue/red for under/at/over goal)
+- [x] Simplified settings modal to just daily calorie target
+- [x] Kept export/import functionality for data backup
+- [x] Fixed "NaN calories over" bug with straightforward math
+- [x] Progress text shows remaining calories or calories over goal
 
-### Task 9: Daily Calorie Goal Logic (utils.js)
-- [ ] Implement basic calorie calculation (BMR-based)
-- [ ] Add progress indicators (calories remaining/over)
-- [ ] Color-code daily total (green = under goal, red = over)
+#### Calorie Progress Features:
+- **Simple calculation**: Uses dailyTarget from settings (default 2000)
+- **Visual progress bar**: Fills proportionally, color changes based on status
+- **Status indicators**: "X calories remaining" or "X calories over goal"
+- **Color coding**: Green (under), Blue (at goal), Red (over)
+- **Clean settings**: Just one field - daily calorie target
+- **Data persistence**: Export/import for backup and restore
 
 ---
 
-## Overall Progress: ~75% Complete
+## 🚀 Next Up: Phase 4 - Historical View & Polish
 
-### Time Invested So Far: ~140 minutes
+### Task 10: Historical Meal View
+- [ ] Create past days view (last 7 days visible by default)
+- [ ] Group meals by date
+- [ ] Make older days collapsible
+- [ ] Add simple date navigation
+- [ ] Show weekly calorie average
+
+---
+
+## Overall Progress: ~80% Complete
+
+### Time Invested So Far: ~170 minutes
 - Planning & documentation: 20 min
 - Repository setup: 10 min
 - CSS Styling & UI: 15 min
@@ -222,6 +245,7 @@
 - Gemini API integration: 30 min
 - Photo workflow & meal management: 15 min
 - Mobile UX enhancements: 20 min
+- Calorie progress & settings simplification: 30 min
 
 ### Estimated Remaining Time: 1.5-2.5 hours
 

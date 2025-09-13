@@ -76,10 +76,12 @@
 
 ### Task 9: Daily Calorie Goal Logic
 **File: `utils.js`**
-- [ ] Implement basic calorie calculation (BMR-based)
-- [ ] Add progress indicator (calories remaining/over)
-- [ ] Color-code daily total (green = under goal, red = over)
-- [ ] Simple visual feedback for staying on track
+- [x] Implement simplified calorie progress calculation
+- [x] Add progress indicator (calories remaining/over)
+- [x] Color-code daily total (green = under goal, red = over)
+- [x] Simple visual feedback for staying on track
+- [x] Simplified settings to just daily calorie target
+- [x] Restored export/import functionality
 
 ## Phase 4: Historical View & Polish (45-60 min)
 
