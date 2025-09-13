@@ -10,13 +10,13 @@
 - [x] Link all files in index.html
 
 ### Task 2: Basic HTML Structure
-- [ ] Add main container div
-- [ ] Create header with app title and daily calorie counter
-- [ ] Add "Add Meal" button (large, prominent)
-- [ ] Create hidden camera input element
-- [ ] Add empty meals container for today's meals
-- [ ] Create simple modal/overlay for photo capture
-- [ ] Add settings button in header
+- [x] Add main container div
+- [x] Create header with app title and daily calorie counter
+- [x] Add "Add Meal" button (large, prominent)
+- [x] Create hidden camera input element
+- [x] Add empty meals container for today's meals
+- [x] Create simple modal/overlay for photo capture
+- [x] Add settings button in header
 
 ### Task 3: Basic CSS Styling
 - [ ] Mobile-first responsive design

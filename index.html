@@ -8,8 +8,53 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Main App Container -->
     <div id="app">
-        <!-- App content will be populated by JavaScript -->
+
+        <!-- Header Section -->
+        <header>
+            <h1>Calorie Hound</h1>
+            <div class="calorie-display">
+                <div class="daily-total">0</div>
+                <div class="calorie-label">Calories Today</div>
+            </div>
+            <button id="settingsBtn" class="settings-btn">⚙️</button>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+
+            <!-- Add Meal Button -->
+            <button id="addMealBtn" class="add-meal-btn">
+                <span class="camera-icon">📷</span>
+                Add Meal
+            </button>
+
+            <!-- Meals Container -->
+            <div id="mealsContainer" class="meals-container">
+                <!-- Meals will be populated here by JavaScript -->
+            </div>
+
+        </main>
+
+        <!-- Hidden Camera Input -->
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
+
+        <!-- Photo Capture Modal -->
+        <div id="photoModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Take Photo</h3>
+                    <button id="closeModal" class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <img id="photoPreview" alt="Photo preview" style="display: none;">
+                    <button id="takePhotoBtn" class="take-photo-btn">Take Photo</button>
+                    <button id="analyzeBtn" class="analyze-btn" style="display: none;">Analyze Meal</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script src="storage.js"></script>
