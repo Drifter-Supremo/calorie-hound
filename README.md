@@ -1,42 +1,40 @@
-# 🐕 Calorie Hound
+# Calorie Hound
 
 A simple AI-powered calorie tracking app that analyzes food photos and automatically logs your meals. Built with vanilla JavaScript and Google's Gemini AI.
 
-![App Demo](https://via.placeholder.com/600x400/60a5fa/ffffff?text=Calorie+Hound+Demo)
+## Features
 
-## ✨ Features
-
-### 📸 Smart Photo Analysis
+### Smart Photo Analysis
 - Take photos of your meals or upload from gallery
 - AI automatically identifies food and estimates calories
 - Edit descriptions and calorie counts before saving
 - High confidence ratings for accurate estimates
 
-### 📊 Daily Tracking
+### Daily Tracking
 - Real-time calorie counter with color-coded progress
 - Visual progress bar showing goal completion
 - Simple daily calorie target setting
 - Green/blue/red status indicators (under/at/over goal)
 
-### 📅 Historical View
+### Historical View
 - View past 7 days of meals in collapsible cards
 - Smart date formatting ("Yesterday", weekdays, dates)
 - 7-day calorie average calculation
 - Color-coded daily totals based on your goals
 
-### 💾 Data Management
+### Data Management
 - All data stored locally in your browser
 - Export/import your meal data as JSON
 - No account required - complete privacy
 - Works offline for viewing past meals
 
-### 📱 Mobile Optimized
+### Mobile Optimized
 - Mobile-first responsive design
 - Camera access for instant photo capture
 - Touch-friendly interface with large buttons
 - Works great on phones, tablets, and desktop
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Modern web browser (Chrome, Firefox, Safari, Edge)
@@ -49,12 +47,7 @@ A simple AI-powered calorie tracking app that analyzes food photos and automatic
    - Create a new API key
    - Copy the key (starts with `AIza...`)
 
-2. **Configure App**
-   - Open `gemini.js` in a text editor
-   - Replace `YOUR_API_KEY_HERE` with your actual API key
-   - Save the file
-
-3. **Run the App**
+2. **Run the App**
    ```bash
    # Option 1: Simple HTTP server
    python3 -m http.server 8000
@@ -66,12 +59,13 @@ A simple AI-powered calorie tracking app that analyzes food photos and automatic
    # Simply open index.html in your browser
    ```
 
-4. **Access the App**
+3. **First Time Setup**
    - Open browser to `http://localhost:8000`
-   - Set your daily calorie goal in Settings
-   - Start adding meals!
+   - The app will automatically show the Settings dialog
+   - Enter your API key and daily calorie target
+   - Click Save Settings to start using the app
 
-## 🛠️ Technical Details
+## Technical Details
 
 ### Architecture
 - **Frontend**: Pure HTML5, CSS3, Vanilla JavaScript
@@ -99,7 +93,7 @@ calorie-hound/
 - Safari 14+
 - Edge 90+
 
-## 📖 Usage Guide
+## Usage Guide
 
 ### Adding Meals
 1. Click the big "Add Meal" button
@@ -116,6 +110,7 @@ calorie-hound/
 
 ### Settings
 - Click the gear icon in the header
+- Enter your Gemini API key (required for photo analysis)
 - Set your daily calorie target (1000-5000 range)
 - Export your data for backup
 - Import data to restore from backup
@@ -126,7 +121,7 @@ calorie-hound/
 - View 7-day average in the section header
 - Only days with meals are shown
 
-## 🔒 Privacy & Security
+## Privacy & Security
 
 - **Local Storage**: All data stays in your browser
 - **No Account**: No sign-up or personal info required
@@ -134,26 +129,17 @@ calorie-hound/
 - **Offline Viewing**: Past meals viewable without internet
 - **Export Control**: You own and control your data
 
-## ⚡ Performance
+## Performance
 
 - **Photo Analysis**: < 3 seconds typical response time
 - **Image Compression**: Photos resized to 800px for faster uploads
 - **Cost Efficient**: Designed for < $1/month per user at normal usage
 - **Lightweight**: No frameworks, minimal JavaScript bundle
 
-## 🛣️ Roadmap
-
-- [ ] PWA support (installable app)
-- [ ] Nutrition breakdown (protein, carbs, fat)
-- [ ] Meal templates and favorites
-- [ ] Weekly/monthly reporting
-- [ ] Food database integration
-- [ ] Multi-language support
-
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### API Issues
-- **"API key invalid"**: Check your Gemini API key in `gemini.js`
+- **"API key not configured"**: Enter your API key in Settings
 - **"Failed to analyze"**: Try compressing the image or check internet connection
 - **"Quota exceeded"**: You've hit daily API limits, try again tomorrow
 
@@ -165,7 +151,7 @@ calorie-hound/
 - **Calories not updating**: Refresh the page or check browser console for errors
 - **Import failed**: Ensure JSON file is valid Calorie Hound export format
 
-## 🤝 Contributing
+## Contributing
 
 This is a simple personal project, but feel free to:
 - Report bugs by creating issues
@@ -173,16 +159,12 @@ This is a simple personal project, but feel free to:
 - Fork and modify for your needs
 - Share improvements
 
-## 📄 License
+## License
 
 MIT License - feel free to use and modify as needed.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Google Gemini AI for food recognition
 - Modern browser APIs for camera access
 - The community for feedback and testing
-
----
-
-**Built with ❤️ and hunger for better calorie tracking**
