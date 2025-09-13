@@ -521,6 +521,12 @@ main {
     margin: 0;
 }
 
+/* Robust state control for photo selection */
+.modal-body .mobile-buttons { display: flex; }
+.modal-body .analyze-btn { display: none; }
+.modal-body.has-photo .mobile-buttons { display: none; }
+.modal-body.has-photo .analyze-btn { display: block; }
+
 /* Loading States */
 .loading {
     display: inline-block;

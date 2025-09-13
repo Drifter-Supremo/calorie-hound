@@ -534,13 +534,13 @@ class PhotoManager {
             elements.photoPreview.src = '';
         }
 
-        // Show capture buttons, hide analyze
-        if (elements.mobileButtons) {
-            elements.mobileButtons.style.display = 'flex';
+        // Reset modal-body state class to control visibility
+        const modalBody = elements.photoModal?.querySelector('.modal-body');
+        if (modalBody) {
+            modalBody.classList.remove('has-photo');
         }
 
         if (elements.analyzeBtn) {
-            elements.analyzeBtn.style.display = 'none';
             elements.analyzeBtn.textContent = 'Analyze Meal';
             elements.analyzeBtn.disabled = false;
         }
@@ -580,13 +580,10 @@ class PhotoManager {
         this.currentFile = file;
         await this.displayPhotoPreview(file);
 
-        // Update UI: hide capture buttons, show analyze
-        if (elements.mobileButtons) {
-            elements.mobileButtons.style.display = 'none';
-        }
-
-        if (elements.analyzeBtn) {
-            elements.analyzeBtn.style.display = 'block';
+        // Update UI via state class for robust mobile behavior
+        const modalBody = elements.photoModal?.querySelector('.modal-body');
+        if (modalBody) {
+            modalBody.classList.add('has-photo');
         }
     }
 
