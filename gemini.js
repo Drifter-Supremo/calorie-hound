@@ -188,6 +188,7 @@ class GeminiAPI {
             // Step 2: Prepare API request
             const requestBody = {
                 contents: [{
+                    role: 'user',
                     parts: [
                         { text: CALORIE_PROMPT },
                         {
@@ -253,7 +254,7 @@ class GeminiAPI {
             const response = await fetch(`${GEMINI_CONFIG.API_ENDPOINT}?key=${GEMINI_CONFIG.API_KEY}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(requestBody),
                 signal: controller.signal
@@ -269,6 +270,8 @@ class GeminiAPI {
                     throw new Error('API rate limit exceeded. Please try again later.');
                 } else if (response.status === 403) {
                     throw new Error('API key invalid or quota exceeded.');
+                } else if (response.status === 404) {
+                    throw new Error('Model gemini-2.5-flash-lite not found or unavailable.');
                 } else {
                     throw new Error(`API request failed: ${response.status} ${response.statusText}`);
                 }

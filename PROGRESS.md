@@ -38,6 +38,14 @@
 
 ## ✅ Phase 1: Core Setup & Structure
 
+### Hotfix: Photo Flow + Gemini Request
+*Completed: September 13, 2025*
+- [x] Simplified modal to mobile-only buttons (Take Photo, Choose from Gallery)
+- [x] Fixed button state transitions: hide capture buttons after selection, show only Analyze
+- [x] Removed desktop/mobile CSS class conflicts
+- [x] Corrected Gemini request payload (adds role: "user") and kept single model `gemini-2.5-flash-lite` per constraints
+- [x] Improved error surfacing without introducing model fallbacks
+
 ### Task 1: Project Setup
 *Completed: September 13, 2025*
 - [x] Created project folder structure (existed with docs, added app files)

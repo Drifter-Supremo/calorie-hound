@@ -24,10 +24,10 @@ const elements = {
     photoModal: document.getElementById('photoModal'),
     closeModal: document.getElementById('closeModal'),
     photoPreview: document.getElementById('photoPreview'),
-    takePhotoBtn: document.getElementById('takePhotoBtn'),
     cameraBtn: document.getElementById('cameraBtn'),
     galleryBtn: document.getElementById('galleryBtn'),
-    analyzeBtn: document.getElementById('analyzeBtn')
+    analyzeBtn: document.getElementById('analyzeBtn'),
+    mobileButtons: document.getElementById('mobileButtons')
 };
 
 // Settings Management
@@ -484,9 +484,6 @@ class PhotoManager {
         elements.cameraInput?.addEventListener('change', (e) => this.handlePhotoSelected(e));
         elements.galleryInput?.addEventListener('change', (e) => this.handlePhotoSelected(e));
 
-        // Desktop take photo button
-        elements.takePhotoBtn?.addEventListener('click', () => this.triggerGalleryInput());
-
         // Mobile buttons
         elements.cameraBtn?.addEventListener('click', () => this.triggerCameraInput());
         elements.galleryBtn?.addEventListener('click', () => this.triggerGalleryInput());
@@ -537,9 +534,9 @@ class PhotoManager {
             elements.photoPreview.src = '';
         }
 
-        if (elements.takePhotoBtn) {
-            elements.takePhotoBtn.style.display = 'block';
-            elements.takePhotoBtn.disabled = false;
+        // Show capture buttons, hide analyze
+        if (elements.mobileButtons) {
+            elements.mobileButtons.style.display = 'flex';
         }
 
         if (elements.analyzeBtn) {
@@ -583,9 +580,9 @@ class PhotoManager {
         this.currentFile = file;
         await this.displayPhotoPreview(file);
 
-        // Update UI
-        if (elements.takePhotoBtn) {
-            elements.takePhotoBtn.style.display = 'none';
+        // Update UI: hide capture buttons, show analyze
+        if (elements.mobileButtons) {
+            elements.mobileButtons.style.display = 'none';
         }
 
         if (elements.analyzeBtn) {
