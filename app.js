@@ -540,6 +540,11 @@ class PhotoManager {
             modalBody.classList.remove('has-photo');
         }
 
+        // Ensure capture buttons are visible again on some mobile browsers
+        if (elements.mobileButtons) {
+            elements.mobileButtons.style.display = 'flex';
+        }
+
         if (elements.analyzeBtn) {
             elements.analyzeBtn.textContent = 'Analyze Meal';
             elements.analyzeBtn.disabled = false;
@@ -584,6 +589,11 @@ class PhotoManager {
         const modalBody = elements.photoModal?.querySelector('.modal-body');
         if (modalBody) {
             modalBody.classList.add('has-photo');
+        }
+
+        // Also force-hide capture buttons to avoid flicker on mobile
+        if (elements.mobileButtons) {
+            elements.mobileButtons.style.display = 'none';
         }
     }
 

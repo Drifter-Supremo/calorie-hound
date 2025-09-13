@@ -232,17 +232,8 @@ class GeminiAPI {
 
         } catch (error) {
             console.error('Error in analyzeImage:', error);
-
-            // Return graceful fallback
-            return {
-                description: 'Food item (analysis failed)',
-                calories: 300,
-                confidence: 'low',
-                portions: 'Standard serving',
-                error: error.message,
-                timestamp: Date.now(),
-                processingTime: Date.now() - startTime
-            };
+            // Surface real error to the UI (no silent fallbacks)
+            throw error;
         }
     }
 
