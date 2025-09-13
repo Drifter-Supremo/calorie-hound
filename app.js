@@ -314,7 +314,7 @@ class MealManager {
 
         editBtn?.addEventListener('click', (e) => {
             e.stopPropagation();
-            this.editMealDescription(meal.id, meal.description);
+            this.showEditMealDialog(meal);
         });
 
         deleteBtn?.addEventListener('click', (e) => {
@@ -324,7 +324,7 @@ class MealManager {
 
         caloriesBtn?.addEventListener('click', (e) => {
             e.stopPropagation();
-            this.editMealCalories(meal.id, meal.calories);
+            this.showEditMealDialog(meal);
         });
 
         elements.mealsContainer?.appendChild(mealCard);
@@ -408,6 +408,63 @@ class MealManager {
             console.error('Error updating calories:', err);
             alert('Failed to update calories. Please try again.');
         }
+    }
+
+    showEditMealDialog(meal) {
+        // Build a lightweight modal using existing confirmation styles
+        const overlay = document.createElement('div');
+        overlay.className = 'confirmation-overlay';
+        overlay.innerHTML = `
+            <div class="confirmation-dialog">
+                <div class="confirmation-header">
+                    <h3>Edit Meal</h3>
+                </div>
+                <div class="confirmation-body">
+                    <div style="display:flex; gap:8px; align-items:center; margin-bottom:12px;">
+                        <input id="editDescription" class="description-input" type="text" value="${meal.description}" placeholder="Meal description" style="flex:1;" />
+                    </div>
+                    <div class="result-calories">
+                        <input id="editCalories" type="number" min="1" max="5000" value="${meal.calories}" />
+                        <span class="calories-label">calories</span>
+                    </div>
+                </div>
+                <div class="confirmation-actions">
+                    <button class="confirmation-cancel secondary-btn">Cancel</button>
+                    <button class="save-edit save-btn">Save</button>
+                </div>
+            </div>
+        `;
+
+        const remove = () => { try { document.body.removeChild(overlay); } catch (_) {} };
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) remove(); });
+
+        const cancelBtn = overlay.querySelector('.confirmation-cancel');
+        const saveBtn = overlay.querySelector('.save-edit');
+        const descInput = overlay.querySelector('#editDescription');
+        const calInput = overlay.querySelector('#editCalories');
+
+        cancelBtn?.addEventListener('click', remove);
+        saveBtn?.addEventListener('click', () => {
+            const description = (descInput.value || '').trim();
+            const calories = parseInt(calInput.value, 10);
+            if (!description) { alert('Description cannot be empty.'); return; }
+            if (!Number.isFinite(calories) || calories < 1 || calories > 5000) { alert('Calories must be between 1 and 5000.'); return; }
+
+            const updated = Storage.meals.updateMeal(meal.id, { description, calories });
+            if (updated) {
+                this.loadTodaysMeals();
+                window.settingsManager?.updateDailyTotal();
+                window.historicalManager?.refresh();
+                window.settingsManager?.showSuccessMessage('Meal updated');
+                remove();
+            } else {
+                alert('Failed to update meal.');
+            }
+        });
+
+        document.body.appendChild(overlay);
+        // Focus description for quick typing
+        setTimeout(() => { descInput?.focus(); descInput?.select(); }, 50);
     }
 
     showEmptyState() {
