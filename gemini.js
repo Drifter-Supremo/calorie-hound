@@ -1,9 +1,22 @@
 // Gemini API Integration
 // Handles AI vision analysis for meal calorie estimation
 
+// API Key Management
+function getAPIKey() {
+    // For development, you can set the API key directly here temporarily
+    // For production, this should be loaded from environment variables
+    const apiKey = 'YOUR_API_KEY_HERE'; // Replace with your actual API key
+
+    if (!apiKey || apiKey === 'YOUR_API_KEY_HERE') {
+        throw new Error('Gemini API key not configured. Please set your API key in gemini.js');
+    }
+
+    return apiKey;
+}
+
 // Configuration
 const GEMINI_CONFIG = {
-    API_KEY: 'AIzaSyCr_91S9f1jttF78PrH36ivYfPCZO4AEiY', // In production, this would come from environment
+    API_KEY: getAPIKey(), // Load from environment or user input
     API_ENDPOINT: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent',
     MAX_IMAGE_WIDTH: 800,
     MAX_IMAGE_HEIGHT: 800,
