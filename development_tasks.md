@@ -3,11 +3,11 @@
 ## Phase 1: Core Setup & Structure (30-45 min)
 
 ### Task 1: Project Setup
-- [ ] Create project folder structure
-- [ ] Create `index.html` with basic HTML5 boilerplate
-- [ ] Add viewport meta tag for mobile responsiveness
-- [ ] Create empty `style.css`, `app.js`, `gemini.js`, `storage.js`, `utils.js`
-- [ ] Link all files in index.html
+- [x] Create project folder structure
+- [x] Create `index.html` with basic HTML5 boilerplate
+- [x] Add viewport meta tag for mobile responsiveness
+- [x] Create empty `style.css`, `app.js`, `gemini.js`, `storage.js`, `utils.js`
+- [x] Link all files in index.html
 
 ### Task 2: Basic HTML Structure
 - [ ] Add main container div
