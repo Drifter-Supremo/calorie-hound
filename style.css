@@ -540,7 +540,7 @@ main {
     }
 }
 
-/* Loading State */
+/* Loading States */
 .loading {
     display: inline-block;
     width: 20px;
@@ -549,10 +549,165 @@ main {
     border-radius: 50%;
     border-top-color: var(--accent-primary);
     animation: spin 1s linear infinite;
+    margin-right: 8px;
+}
+
+.loading.large {
+    width: 32px;
+    height: 32px;
+    border-width: 4px;
+}
+
+.loading.small {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+}
+
+/* Loading overlay for full-screen operations */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    backdrop-filter: blur(4px);
+}
+
+.loading-overlay .loading {
+    width: 40px;
+    height: 40px;
+    border-width: 4px;
+    margin-right: 0;
+    margin-bottom: 16px;
+}
+
+.loading-overlay-text {
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.loading-overlay-subtext {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    margin-top: 8px;
+    text-align: center;
+}
+
+/* Button loading states */
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+    cursor: not-allowed;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
     to { transform: rotate(360deg); }
+}
+
+/* Pulse animation for waiting states */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Error State Styling */
+.analysis-error {
+    text-align: center;
+    padding: 40px 20px;
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    border: 1px solid var(--danger);
+}
+
+.error-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    filter: sepia(1) hue-rotate(320deg);
+}
+
+.analysis-error h4 {
+    color: var(--danger);
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.error-message {
+    color: var(--text-primary);
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+.error-help {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.error-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.error-actions button {
+    flex: 1;
+    max-width: 140px;
+}
+
+/* Success notifications */
+.success-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--success);
+    color: white;
+    padding: 12px 20px;
+    border-radius: var(--radius);
+    font-weight: 500;
+    z-index: 10000;
+    animation: slideInRight 0.3s ease-out;
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 @keyframes slideIn {
@@ -574,19 +729,45 @@ main {
 }
 
 .empty-state-icon {
-    font-size: 48px;
-    margin-bottom: 16px;
-    opacity: 0.5;
+    margin-bottom: 20px;
+    opacity: 0.4;
+    color: var(--text-muted);
+}
+
+.empty-state-icon svg {
+    width: 64px;
+    height: 64px;
 }
 
 .empty-state-text {
     font-size: 18px;
+    font-weight: 500;
+    color: var(--text-primary);
     margin-bottom: 8px;
 }
 
 .empty-state-subtext {
     font-size: 14px;
-    color: var(--text-dim);
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.empty-state-btn {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover));
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.empty-state-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px var(--accent-glow);
 }
 
 /* Settings Form Styles */
@@ -1164,5 +1345,110 @@ html {
 
     .day-meals {
         padding: 0 16px 14px;
+    }
+}
+
+/* Confirmation Dialog */
+.confirmation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+    backdrop-filter: blur(4px);
+}
+
+.confirmation-dialog {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    min-width: 320px;
+    max-width: 400px;
+    margin: 20px;
+    animation: confirmationSlideIn 0.2s ease-out;
+}
+
+.confirmation-header {
+    padding: 20px 20px 0;
+    border-bottom: none;
+}
+
+.confirmation-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.confirmation-body {
+    padding: 16px 20px 20px;
+}
+
+.confirmation-message {
+    color: var(--text-primary);
+    font-size: 15px;
+    line-height: 1.5;
+    margin: 0 0 12px;
+}
+
+.confirmation-warning {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin: 0;
+    font-style: italic;
+}
+
+.confirmation-actions {
+    padding: 0 20px 20px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.confirmation-actions button {
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    min-width: 80px;
+}
+
+.confirmation-cancel {
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.confirmation-cancel:hover {
+    background: var(--bg-hover);
+    border-color: var(--accent-primary);
+}
+
+.confirmation-confirm {
+    background: var(--danger);
+    color: white;
+    border: 1px solid var(--danger);
+}
+
+.confirmation-confirm:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+}
+
+@keyframes confirmationSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }

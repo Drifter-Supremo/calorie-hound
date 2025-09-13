@@ -13,6 +13,7 @@ const UserSettings = {
     getDefaults() {
         return {
             dailyTarget: 2000,
+            geminiApiKey: '',
             createdAt: Date.now(),
             updatedAt: Date.now()
         };

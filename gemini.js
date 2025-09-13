@@ -3,30 +3,19 @@
 
 // API Key Management
 function getAPIKey() {
-    // For GitHub Pages deployment, prompt user for API key
-    const apiKey = prompt('Please enter your Gemini API key:');
+    // Get API key from user settings
+    const settings = UserSettings.load();
 
-    if (!apiKey || apiKey.trim() === '') {
-        throw new Error('API key is required to analyze photos. Get one at https://makersuite.google.com/app/apikey');
+    if (!settings.geminiApiKey || settings.geminiApiKey.trim() === '') {
+        throw new Error('API key not configured. Please set it in Settings.');
     }
 
-    // Store in sessionStorage so user doesn't have to re-enter it
-    sessionStorage.setItem('gemini_api_key', apiKey);
-    return apiKey;
-}
-
-// Check if API key is already stored
-function getCachedAPIKey() {
-    const cachedKey = sessionStorage.getItem('gemini_api_key');
-    if (cachedKey) {
-        return cachedKey;
-    }
-    return getAPIKey();
+    return settings.geminiApiKey;
 }
 
 // Configuration
 const GEMINI_CONFIG = {
-    API_KEY: getCachedAPIKey(), // Get API key from session or prompt user
+    get API_KEY() { return getAPIKey(); }, // Get API key from settings dynamically
     API_ENDPOINT: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent',
     MAX_IMAGE_WIDTH: 800,
     MAX_IMAGE_HEIGHT: 800,

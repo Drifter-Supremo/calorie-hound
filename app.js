@@ -7,6 +7,7 @@ const elements = {
     settingsModal: document.getElementById('settingsModal'),
     closeSettings: document.getElementById('closeSettings'),
     dailyTarget: document.getElementById('dailyTarget'),
+    geminiApiKey: document.getElementById('geminiApiKey'),
     saveSettings: document.getElementById('saveSettings'),
     exportData: document.getElementById('exportData'),
     importData: document.getElementById('importData'),
@@ -92,10 +93,14 @@ class SettingsManager {
         if (elements.dailyTarget) {
             elements.dailyTarget.value = settings.dailyTarget || 2000;
         }
+        if (elements.geminiApiKey) {
+            elements.geminiApiKey.value = settings.geminiApiKey || '';
+        }
     }
 
     saveSettings() {
         const dailyTarget = parseInt(elements.dailyTarget?.value) || 2000;
+        const geminiApiKey = elements.geminiApiKey?.value?.trim() || '';
 
         // Simple validation
         if (dailyTarget < 1000 || dailyTarget > 5000) {
@@ -103,8 +108,13 @@ class SettingsManager {
             return;
         }
 
+        if (!geminiApiKey) {
+            alert('Please enter your Gemini API key to use photo analysis');
+            return;
+        }
+
         // Save settings
-        const saved = Storage.settings.save({ dailyTarget });
+        const saved = Storage.settings.save({ dailyTarget, geminiApiKey });
         if (saved) {
             this.showSuccessMessage('Settings saved successfully!');
             this.closeSettings();
@@ -311,8 +321,14 @@ class MealManager {
     }
 
     async deleteMeal(mealId) {
-        // Show confirmation dialog
-        const confirmed = confirm('Delete this meal? This action cannot be undone.');
+        // Show custom confirmation dialog
+        const confirmed = await this.showConfirmationDialog(
+            'Delete Meal',
+            'Are you sure you want to delete this meal?',
+            'This action cannot be undone.',
+            'Delete',
+            'Cancel'
+        );
 
         if (!confirmed) return;
 
@@ -364,12 +380,66 @@ class MealManager {
         if (elements.mealsContainer) {
             elements.mealsContainer.innerHTML = `
                 <div class="empty-state">
-                    <div class="empty-state-icon">📷</div>
+                    <div class="empty-state-icon">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+                            <circle cx="12" cy="13" r="4"/>
+                        </svg>
+                    </div>
                     <div class="empty-state-text">No meals logged today</div>
-                    <div class="empty-state-subtext">Tap "Add Meal" to get started</div>
+                    <div class="empty-state-subtext">Take a photo of your food to start tracking calories</div>
+                    <button class="empty-state-btn" onclick="document.getElementById('addMealBtn').click()">
+                        Add Your First Meal
+                    </button>
                 </div>
             `;
         }
+    }
+
+    showConfirmationDialog(title, message, warning, confirmText, cancelText) {
+        return new Promise((resolve) => {
+            // Create modal overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'confirmation-overlay';
+            overlay.innerHTML = `
+                <div class="confirmation-dialog">
+                    <div class="confirmation-header">
+                        <h3>${title}</h3>
+                    </div>
+                    <div class="confirmation-body">
+                        <p class="confirmation-message">${message}</p>
+                        ${warning ? `<p class="confirmation-warning">${warning}</p>` : ''}
+                    </div>
+                    <div class="confirmation-actions">
+                        <button class="confirmation-cancel secondary-btn">${cancelText}</button>
+                        <button class="confirmation-confirm danger-btn">${confirmText}</button>
+                    </div>
+                </div>
+            `;
+
+            // Add event listeners
+            const confirmBtn = overlay.querySelector('.confirmation-confirm');
+            const cancelBtn = overlay.querySelector('.confirmation-cancel');
+
+            confirmBtn.addEventListener('click', () => {
+                document.body.removeChild(overlay);
+                resolve(true);
+            });
+
+            cancelBtn.addEventListener('click', () => {
+                document.body.removeChild(overlay);
+                resolve(false);
+            });
+
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    document.body.removeChild(overlay);
+                    resolve(false);
+                }
+            });
+
+            document.body.appendChild(overlay);
+        });
     }
 }
 
@@ -570,9 +640,37 @@ class PhotoManager {
                 Analyzing...
             `;
         }
+
+        // Show full-screen loading overlay
+        this.showLoadingOverlay('Analyzing your meal...', 'This usually takes 2-3 seconds');
+    }
+
+    showLoadingOverlay(text, subtext = '') {
+        // Remove existing overlay if any
+        this.hideLoadingOverlay();
+
+        const overlay = document.createElement('div');
+        overlay.id = 'loadingOverlay';
+        overlay.className = 'loading-overlay';
+        overlay.innerHTML = `
+            <div class="loading large"></div>
+            <div class="loading-overlay-text">${text}</div>
+            ${subtext ? `<div class="loading-overlay-subtext">${subtext}</div>` : ''}
+        `;
+        document.body.appendChild(overlay);
+    }
+
+    hideLoadingOverlay() {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+            overlay.remove();
+        }
     }
 
     async showAnalysisResult(result) {
+        // Hide loading overlay
+        this.hideLoadingOverlay();
+
         // Create analysis result modal content
         const modalBody = elements.photoModal?.querySelector('.modal-body');
         if (!modalBody) return;
@@ -614,14 +712,21 @@ class PhotoManager {
     }
 
     showAnalysisError(message) {
+        // Hide loading overlay
+        this.hideLoadingOverlay();
+
         const modalBody = elements.photoModal?.querySelector('.modal-body');
         if (!modalBody) return;
 
+        // Parse error message for better user feedback
+        const errorInfo = this.parseErrorMessage(message);
+
         modalBody.innerHTML = `
             <div class="analysis-error">
-                <h4>Analysis Failed</h4>
-                <p class="error-message">${message}</p>
-                <p class="error-help">Please check your internet connection and try again.</p>
+                <div class="error-icon">⚠️</div>
+                <h4>${errorInfo.title}</h4>
+                <p class="error-message">${errorInfo.message}</p>
+                <p class="error-help">${errorInfo.suggestion}</p>
                 <div class="error-actions">
                     <button id="retryAnalysis" class="analyze-btn">Try Again</button>
                     <button id="retakePhoto" class="secondary-btn">Retake Photo</button>
@@ -635,6 +740,62 @@ class PhotoManager {
 
         retryBtn?.addEventListener('click', () => this.analyzePhoto());
         retakePhotoBtn?.addEventListener('click', () => this.resetModal());
+    }
+
+    parseErrorMessage(message) {
+        // Provide user-friendly error messages based on the error
+        const errorMap = {
+            'API key': {
+                title: 'API Configuration Error',
+                message: 'The AI service is not properly configured.',
+                suggestion: 'Please check your API key in the settings or contact support.'
+            },
+            'quota': {
+                title: 'Daily Limit Reached',
+                message: 'You\'ve reached the daily analysis limit.',
+                suggestion: 'Try again tomorrow or upgrade your plan for more analyses.'
+            },
+            'rate limit': {
+                title: 'Too Many Requests',
+                message: 'Please wait a moment before trying again.',
+                suggestion: 'The AI service is busy. Wait 30 seconds and retry.'
+            },
+            'network': {
+                title: 'Connection Error',
+                message: 'Unable to connect to the AI service.',
+                suggestion: 'Check your internet connection and try again.'
+            },
+            'timeout': {
+                title: 'Request Timed Out',
+                message: 'The analysis took too long to complete.',
+                suggestion: 'Try with a smaller or clearer image.'
+            },
+            'file size': {
+                title: 'Image Too Large',
+                message: 'The image file is too large to process.',
+                suggestion: 'Please use an image smaller than 10MB.'
+            },
+            'format': {
+                title: 'Unsupported Format',
+                message: 'The image format is not supported.',
+                suggestion: 'Please use JPG, PNG, or WebP image formats.'
+            }
+        };
+
+        // Find matching error type
+        const lowerMessage = message.toLowerCase();
+        for (const [key, info] of Object.entries(errorMap)) {
+            if (lowerMessage.includes(key.toLowerCase())) {
+                return info;
+            }
+        }
+
+        // Default error message
+        return {
+            title: 'Analysis Failed',
+            message: 'Something went wrong while analyzing your photo.',
+            suggestion: 'Please check your internet connection and try again. If the problem persists, try a different photo.'
+        };
     }
 
     async saveMeal(originalResult, calories, description) {
@@ -838,6 +999,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Remove sample meal cards if storage has data
     const todayLog = Storage.meals.loadByDate();
     const settings = Storage.settings.load();
+
+    // Show settings for first-time users or if API key is missing
+    if (!settings.geminiApiKey || !settings.dailyTarget) {
+        window.settingsManager.showSettings();
+    }
+
     if (settings.dailyTarget || todayLog.meals.length > 0) {
         // Clear any sample data
         const sampleCards = document.querySelectorAll('.meal-card:not([data-meal-id])');
