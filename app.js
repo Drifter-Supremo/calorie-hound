@@ -76,9 +76,13 @@ class SettingsManager {
     }
 
     openSettings() {
+        console.log('openSettings called');
         if (elements.settingsModal) {
+            console.log('Opening settings modal');
             elements.settingsModal.style.display = 'flex';
             this.loadSettings();
+        } else {
+            console.error('Settings modal element not found!');
         }
     }
 
@@ -1001,8 +1005,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const settings = Storage.settings.load();
 
     // Show settings for first-time users or if API key is missing
+    console.log('Settings check:', settings);
+    console.log('API key empty?', !settings.geminiApiKey);
+    console.log('Daily target missing?', !settings.dailyTarget);
+
     if (!settings.geminiApiKey || !settings.dailyTarget) {
-        window.settingsManager.showSettings();
+        console.log('Showing settings modal...');
+        // Small delay to ensure DOM is ready
+        setTimeout(() => {
+            window.settingsManager.openSettings();
+        }, 100);
+    } else {
+        console.log('Settings already configured, skipping modal');
     }
 
     if (settings.dailyTarget || todayLog.meals.length > 0) {
