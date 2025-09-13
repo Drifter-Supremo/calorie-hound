@@ -433,6 +433,61 @@ main {
     box-shadow: 0 8px 30px var(--accent-glow);
 }
 
+/* Device-specific button modes */
+.take-photo-btn.camera-mode .camera-icon {
+    display: inline-block;
+}
+
+.take-photo-btn.camera-mode .upload-icon {
+    display: none;
+}
+
+.take-photo-btn.upload-mode .camera-icon {
+    display: none;
+}
+
+.take-photo-btn.upload-mode .upload-icon {
+    display: inline-block;
+}
+
+.device-capability-text {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 8px;
+    font-style: italic;
+}
+
+/* Mobile buttons layout */
+.mobile-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.mobile-buttons .take-photo-btn {
+    margin: 0;
+}
+
+/* Desktop/Mobile visibility */
+.desktop-only {
+    display: block;
+}
+
+.mobile-only {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none;
+    }
+
+    .mobile-only {
+        display: block;
+    }
+}
+
 /* Loading State */
 .loading {
     display: inline-block;

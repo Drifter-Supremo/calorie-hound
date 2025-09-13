@@ -20,10 +20,13 @@ const elements = {
     // Photo capture elements
     addMealBtn: document.getElementById('addMealBtn'),
     cameraInput: document.getElementById('cameraInput'),
+    galleryInput: document.getElementById('galleryInput'),
     photoModal: document.getElementById('photoModal'),
     closeModal: document.getElementById('closeModal'),
     photoPreview: document.getElementById('photoPreview'),
     takePhotoBtn: document.getElementById('takePhotoBtn'),
+    cameraBtn: document.getElementById('cameraBtn'),
+    galleryBtn: document.getElementById('galleryBtn'),
     analyzeBtn: document.getElementById('analyzeBtn')
 };
 
@@ -353,18 +356,44 @@ class PhotoManager {
     constructor() {
         this.currentFile = null;
         this.isAnalyzing = false;
+        this.hasCamera = false;
         this.initializeEventListeners();
+        this.detectCameraCapability();
+    }
+
+    async detectCameraCapability() {
+        try {
+            // Check if getUserMedia is supported
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                this.hasCamera = false;
+                return;
+            }
+
+            // Try to get camera permissions (will prompt user)
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            this.hasCamera = true;
+            // Stop the stream immediately
+            stream.getTracks().forEach(track => track.stop());
+        } catch (error) {
+            this.hasCamera = false;
+            console.log('Camera not available:', error.message);
+        }
     }
 
     initializeEventListeners() {
         // Add Meal button
         elements.addMealBtn?.addEventListener('click', () => this.openPhotoCapture());
 
-        // Camera input
+        // Camera inputs
         elements.cameraInput?.addEventListener('change', (e) => this.handlePhotoSelected(e));
+        elements.galleryInput?.addEventListener('change', (e) => this.handlePhotoSelected(e));
 
-        // Take Photo button
-        elements.takePhotoBtn?.addEventListener('click', () => this.triggerCameraInput());
+        // Desktop take photo button
+        elements.takePhotoBtn?.addEventListener('click', () => this.triggerGalleryInput());
+
+        // Mobile buttons
+        elements.cameraBtn?.addEventListener('click', () => this.triggerCameraInput());
+        elements.galleryBtn?.addEventListener('click', () => this.triggerGalleryInput());
 
         // Analyze button
         elements.analyzeBtn?.addEventListener('click', () => this.analyzePhoto());
@@ -384,6 +413,15 @@ class PhotoManager {
         if (elements.photoModal) {
             elements.photoModal.style.display = 'flex';
             this.resetModal();
+            this.updateModalForDevice();
+        }
+    }
+
+    updateModalForDevice() {
+        // Simple title update based on context
+        const modalTitle = elements.photoModal?.querySelector('.modal-header h3');
+        if (modalTitle) {
+            modalTitle.textContent = 'Add Meal Photo';
         }
     }
 
@@ -405,7 +443,6 @@ class PhotoManager {
 
         if (elements.takePhotoBtn) {
             elements.takePhotoBtn.style.display = 'block';
-            elements.takePhotoBtn.textContent = 'Take Photo';
             elements.takePhotoBtn.disabled = false;
         }
 
@@ -414,10 +451,20 @@ class PhotoManager {
             elements.analyzeBtn.textContent = 'Analyze Meal';
             elements.analyzeBtn.disabled = false;
         }
+
+        // Reset modal title
+        const modalTitle = elements.photoModal?.querySelector('.modal-header h3');
+        if (modalTitle) {
+            modalTitle.textContent = 'Take Photo';
+        }
     }
 
     triggerCameraInput() {
         elements.cameraInput?.click();
+    }
+
+    triggerGalleryInput() {
+        elements.galleryInput?.click();
     }
 
     async handlePhotoSelected(event) {

@@ -66,7 +66,9 @@
         </main>
 
         <!-- Hidden Camera Input -->
+        <!-- Hidden inputs for photo capture -->
         <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
+        <input type="file" id="galleryInput" accept="image/*" style="display: none;">
 
         <!-- Photo Capture Modal -->
         <div id="photoModal" class="modal" style="display: none;">
@@ -82,7 +84,37 @@
                 </div>
                 <div class="modal-body">
                     <img id="photoPreview" alt="Photo preview" style="display: none;">
-                    <button id="takePhotoBtn" class="take-photo-btn">Take Photo</button>
+
+                    <!-- Single button for desktop -->
+                    <button id="takePhotoBtn" class="take-photo-btn desktop-only">
+                        <svg class="upload-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7,10 12,15 17,10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        <span id="buttonText">Choose Image</span>
+                    </button>
+
+                    <!-- Two buttons for mobile -->
+                    <div id="mobileButtons" class="mobile-buttons mobile-only" style="display: none;">
+                        <button id="cameraBtn" class="take-photo-btn camera-mode">
+                            <svg class="camera-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                                <circle cx="12" cy="13" r="4"/>
+                            </svg>
+                            <span>Take Photo</span>
+                        </button>
+                        <button id="galleryBtn" class="take-photo-btn upload-mode">
+                            <svg class="upload-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7,10 12,15 17,10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            <span>Choose from Gallery</span>
+                        </button>
+                    </div>
+
+                    <div id="deviceCapabilityText" class="device-capability-text" style="display: none;"></div>
                     <button id="analyzeBtn" class="analyze-btn" style="display: none;">Analyze Meal</button>
                 </div>
             </div>

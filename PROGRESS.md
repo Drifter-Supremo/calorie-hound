@@ -184,6 +184,24 @@
 
 ---
 
+### Mobile Photo Capture UX Enhancement
+*Completed: September 13, 2025*
+- [x] Enhanced photo modal with dual options for mobile users
+- [x] Added separate "Take Photo" and "Choose from Gallery" buttons for mobile
+- [x] Implemented CSS media queries for automatic desktop/mobile UI switching
+- [x] Created dedicated camera input (with capture="environment") and gallery input
+- [x] Simplified JavaScript event handling for cleaner architecture
+- [x] Improved user clarity with device-appropriate button text and icons
+
+#### Mobile Photo Capture Features:
+- **Mobile devices**: Two clear options - "Take Photo" (camera) and "Choose from Gallery"
+- **Desktop devices**: Single "Choose Image" button for file selection
+- **Automatic UI adaptation**: CSS handles device detection, no complex JavaScript
+- **Clear visual indicators**: Camera icon for photo capture, upload icon for file selection
+- **Better accessibility**: Touch-friendly buttons with proper spacing
+
+---
+
 ## 🚀 Next Up: Phase 3 - Advanced Features & Polish
 
 ### Task 9: Daily Calorie Goal Logic (utils.js)
@@ -193,9 +211,9 @@
 
 ---
 
-## Overall Progress: ~70% Complete
+## Overall Progress: ~75% Complete
 
-### Time Invested So Far: ~120 minutes
+### Time Invested So Far: ~140 minutes
 - Planning & documentation: 20 min
 - Repository setup: 10 min
 - CSS Styling & UI: 15 min
@@ -203,6 +221,7 @@
 - Settings & onboarding: 15 min
 - Gemini API integration: 30 min
 - Photo workflow & meal management: 15 min
+- Mobile UX enhancements: 20 min
 
 ### Estimated Remaining Time: 1.5-2.5 hours
 
