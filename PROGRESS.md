@@ -199,6 +199,12 @@
 - [x] Added real-time daily calorie total updates
 - [x] Built chronological meal display (newest first)
 
+### Hotfix: Day Cutoff Uses User Time Zone
+*Completed: September 13, 2025*
+- [x] Fixed daily log cutoff to use user-selected time zone (midnight local)
+- [x] Added Time Zone setting in Settings (defaults to device time zone)
+- [x] Updated storage and historical views to use time zone-aware dates
+
 #### Meal Management Features:
 - **Delete meals**: Trash icon with confirmation dialog
 - **Edit descriptions**: Pencil icon for dedicated editing

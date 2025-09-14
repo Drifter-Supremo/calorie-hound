@@ -12,6 +12,7 @@ const elements = {
     exportData: document.getElementById('exportData'),
     importData: document.getElementById('importData'),
     importFile: document.getElementById('importFile'),
+    timeZoneSelect: document.getElementById('timeZone'),
     dailyTotal: document.querySelector('.daily-total'),
     mealsContainer: document.getElementById('mealsContainer'),
     historicalSection: document.getElementById('historicalSection'),
@@ -35,6 +36,7 @@ class SettingsManager {
     constructor() {
         this.initializeEventListeners();
         this.checkFirstVisit();
+        this.populateTimeZones();
     }
 
     initializeEventListeners() {
@@ -80,6 +82,7 @@ class SettingsManager {
         if (elements.settingsModal) {
             console.log('Opening settings modal');
             elements.settingsModal.style.display = 'flex';
+            this.populateTimeZones();
             this.loadSettings();
         } else {
             console.error('Settings modal element not found!');
@@ -100,11 +103,16 @@ class SettingsManager {
         if (elements.geminiApiKey) {
             elements.geminiApiKey.value = settings.geminiApiKey || '';
         }
+        if (elements.timeZoneSelect) {
+            const deviceTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            elements.timeZoneSelect.value = settings.timeZone || deviceTZ || 'UTC';
+        }
     }
 
     saveSettings() {
         const dailyTarget = parseInt(elements.dailyTarget?.value) || 2000;
         const geminiApiKey = elements.geminiApiKey?.value?.trim() || '';
+        const selectedTZ = elements.timeZoneSelect?.value || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
 
         // Simple validation
         if (dailyTarget < 1000 || dailyTarget > 5000) {
@@ -118,7 +126,7 @@ class SettingsManager {
         }
 
         // Save settings
-        const saved = Storage.settings.save({ dailyTarget, geminiApiKey });
+        const saved = Storage.settings.save({ dailyTarget, geminiApiKey, timeZone: selectedTZ });
         if (saved) {
             this.showSuccessMessage('Settings saved successfully!');
             this.closeSettings();
@@ -126,6 +134,51 @@ class SettingsManager {
             // Refresh historical data with new goal
             window.historicalManager?.refresh();
         }
+    }
+
+    populateTimeZones() {
+        if (!elements.timeZoneSelect) return;
+
+        // If already populated, skip
+        if (elements.timeZoneSelect.options.length > 0) return;
+
+        const deviceTZ = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+        let timeZones = [];
+        try {
+            // Modern browsers
+            if (typeof Intl.supportedValuesOf === 'function') {
+                timeZones = Intl.supportedValuesOf('timeZone');
+            }
+        } catch (_) {}
+
+        if (!timeZones || timeZones.length === 0) {
+            // Simple fallback list with common zones
+            timeZones = [
+                deviceTZ,
+                'UTC',
+                'America/New_York',
+                'America/Chicago',
+                'America/Denver',
+                'America/Los_Angeles',
+                'Europe/London',
+                'Europe/Paris',
+                'Asia/Tokyo',
+                'Asia/Singapore',
+                'Australia/Sydney'
+            ];
+            // Ensure uniqueness
+            timeZones = Array.from(new Set(timeZones));
+        }
+
+        // Populate select
+        const frag = document.createDocumentFragment();
+        timeZones.forEach(tz => {
+            const opt = document.createElement('option');
+            opt.value = tz;
+            opt.textContent = tz === deviceTZ ? `${tz} (device)` : tz;
+            frag.appendChild(opt);
+        });
+        elements.timeZoneSelect.appendChild(frag);
     }
 
     exportData() {
@@ -990,7 +1043,8 @@ class HistoricalManager {
         for (let i = 1; i <= daysCount; i++) {
             const date = new Date(today);
             date.setDate(date.getDate() - i);
-            const dateString = date.toISOString().split('T')[0];
+            // Format date string using the user's configured time zone
+            const dateString = Storage.meals.formatDateYMD(date);
 
             const dayLog = Storage.meals.loadByDate(dateString);
             if (dayLog.meals && dayLog.meals.length > 0) {
@@ -1070,25 +1124,30 @@ class HistoricalManager {
     }
 
     formatDate(date) {
-        const today = new Date();
-        const yesterday = new Date(today);
-        yesterday.setDate(yesterday.getDate() - 1);
+        const tz = (Storage.settings.load().timeZone) || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
 
-        // Check if it's yesterday
-        if (date.toDateString() === yesterday.toDateString()) {
+        // Build comparable YYYY-MM-DD strings in the user's time zone
+        const todayStr = Storage.meals.formatDateYMD(new Date());
+        const yesterdayStr = Storage.meals.formatDateYMD(new Date(Date.now() - 24 * 60 * 60 * 1000));
+        const dateStr = Storage.meals.formatDateYMD(date);
+
+        if (dateStr === yesterdayStr) {
             return 'Yesterday';
         }
 
-        // Check if it's within the last week
-        const daysAgo = Math.floor((today - date) / (1000 * 60 * 60 * 24));
+        // If within last 7 days relative to user's tz, use weekday name
+        const todayDate = new Date();
+        const diffMs = new Date(todayStr).getTime() - new Date(dateStr).getTime();
+        const daysAgo = Math.round(diffMs / (24 * 60 * 60 * 1000));
         if (daysAgo <= 7) {
-            return date.toLocaleDateString('en-US', { weekday: 'long' });
+            return date.toLocaleDateString('en-US', { weekday: 'long', timeZone: tz });
         }
 
-        // Otherwise show the date
+        // Otherwise show the date using user's tz
         return date.toLocaleDateString('en-US', {
             month: 'short',
-            day: 'numeric'
+            day: 'numeric',
+            timeZone: tz
         });
     }
 

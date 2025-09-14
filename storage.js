@@ -14,6 +14,8 @@ const UserSettings = {
         return {
             dailyTarget: 2000,
             geminiApiKey: '',
+            // Default to the device's current IANA time zone
+            timeZone: (Intl.DateTimeFormat().resolvedOptions().timeZone) || 'UTC',
             createdAt: Date.now(),
             updatedAt: Date.now()
         };
@@ -53,10 +55,27 @@ const UserSettings = {
 
 // Meal Logs Management
 const MealLogs = {
-    // Get today's date in YYYY-MM-DD format
+    // Internal: get the user's selected IANA time zone
+    getUserTimeZone() {
+        const settings = UserSettings.load();
+        return settings.timeZone || (Intl.DateTimeFormat().resolvedOptions().timeZone) || 'UTC';
+    },
+
+    // Format a JS Date as YYYY-MM-DD in the user's time zone
+    formatDateYMD(date) {
+        const tz = this.getUserTimeZone();
+        // Use en-CA to get YYYY-MM-DD reliably
+        return new Intl.DateTimeFormat('en-CA', {
+            timeZone: tz,
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        }).format(date);
+    },
+
+    // Get today's date in YYYY-MM-DD for the user's time zone
     getTodayDate() {
-        const today = new Date();
-        return today.toISOString().split('T')[0];
+        return this.formatDateYMD(new Date());
     },
 
     // Load all meal logs
@@ -175,7 +194,7 @@ const MealLogs = {
         const allLogs = this.loadAll();
         const cutoffDate = new Date();
         cutoffDate.setDate(cutoffDate.getDate() - days);
-        const cutoff = cutoffDate.toISOString().split('T')[0];
+        const cutoff = this.formatDateYMD(cutoffDate);
 
         return allLogs.filter(log => log.date >= cutoff);
     },
